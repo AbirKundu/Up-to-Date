@@ -64,7 +64,9 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 View and manage all your subscriptions in one place.
               </p>
-              <Button className="w-full">View Subscriptions</Button>
+              <Button className="w-full" onClick={() => navigate('/subscriptions')}>
+                View Subscriptions
+              </Button>
             </CardContent>
           </Card>
 
