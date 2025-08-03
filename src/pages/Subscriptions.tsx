@@ -9,6 +9,7 @@ import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { AddSubscriptionDialog } from '@/components/AddSubscriptionDialog';
 import { AdminSubscriptionManager } from '@/components/AdminSubscriptionManager';
 import { useAuth } from '@/hooks/useAuth';
+import { Navbar } from '@/components/Navbar';
 import { 
   Search, 
   Filter, 
@@ -17,16 +18,12 @@ import {
   DollarSign,
   RefreshCw,
   BarChart3,
-  CreditCard,
-  Home,
-  LogOut
+  CreditCard
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
 
 const Subscriptions = () => {
-  const { isAdmin, user, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const { 
     subscriptions, 
     loading, 
@@ -69,51 +66,23 @@ const Subscriptions = () => {
   const upcomingPayments = getUpcomingPayments();
   const activeCount = subscriptions.filter(sub => sub.is_active).length;
 
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <h2 className="text-xl">Loading subscriptions...</h2>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="text-center">
+            <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <h2 className="text-xl">Loading subscriptions...</h2>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-                <Home className="h-4 w-4 mr-2" />
-                Home
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold">Subscription Manager</h1>
-                <p className="text-muted-foreground">Track and manage all your subscriptions</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">Welcome, {user?.email}</span>
-              <Button variant="outline" onClick={refetch}>
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
-              <AddSubscriptionDialog />
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background">
+      <Navbar />
 
       <main className="container mx-auto px-4 py-8">
         {/* Admin View */}
@@ -126,6 +95,23 @@ const Subscriptions = () => {
           />
         ) : (
           <>
+            {/* User Header */}
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h1 className="text-3xl font-bold">My Subscriptions</h1>
+                  <p className="text-muted-foreground">Track and manage your subscription services</p>
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={refetch}>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                  <AddSubscriptionDialog />
+                </div>
+              </div>
+            </div>
+
             {/* User Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>

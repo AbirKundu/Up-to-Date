@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
-import { LogOut, Settings, CreditCard } from 'lucide-react';
+import { CreditCard, Settings, TrendingUp } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
 
 const Index = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,15 +16,14 @@ const Index = () => {
     }
   }, [user, loading, navigate]);
 
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <h2 className="text-xl">Loading...</h2>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl">Loading...</h2>
+          </div>
         </div>
       </div>
     );
@@ -34,22 +34,18 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Subscription Manager</h1>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-muted-foreground">Welcome, {user.email}</span>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-4">Welcome to SubManager</h1>
+          <p className="text-xl text-muted-foreground">
+            Manage all your subscriptions in one place
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{/* ... keep existing code (card components) */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -84,13 +80,16 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Manage your account settings and notification preferences.
               </p>
-              <Button variant="outline" className="w-full">Edit Profile</Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/profile')}>Edit Profile</Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Quick Stats</CardTitle>
+              <CardTitle className="flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2" />
+                Quick Stats
+              </CardTitle>
               <CardDescription>
                 Your subscription overview
               </CardDescription>
