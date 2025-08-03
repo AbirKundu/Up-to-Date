@@ -17,6 +17,7 @@ const Auth = () => {
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedLoginType, setSelectedLoginType] = useState<'user' | 'admin'>('user');
   
   const { signIn, signUp, user, isAdmin, userRole } = useAuth();
   const { toast } = useToast();
@@ -28,6 +29,16 @@ const Auth = () => {
       navigate('/');
     }
   }, [user, navigate]);
+
+  const handleLoginTypeSelect = (type: 'user' | 'admin') => {
+    setSelectedLoginType(type);
+    // Pre-fill admin email if admin login is selected
+    if (type === 'admin') {
+      setEmail('abircse22@gmail.com');
+    } else {
+      setEmail('');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +64,7 @@ const Auth = () => {
         } else {
           toast({
             title: "Welcome back!",
-            description: "You have successfully logged in.",
+            description: `You have successfully logged in${selectedLoginType === 'admin' ? ' as admin' : ''}.`,
           });
         }
       } else {
@@ -109,16 +120,34 @@ const Auth = () => {
             <TabsContent value="login">
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <Card className="border-2 border-primary/20 hover:border-primary/40 transition-colors cursor-pointer">
+                  <Card 
+                    className={`border-2 transition-colors cursor-pointer ${
+                      selectedLoginType === 'user' 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-primary/20 hover:border-primary/40'
+                    }`}
+                    onClick={() => handleLoginTypeSelect('user')}
+                  >
                     <CardContent className="p-4 text-center">
-                      <User className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <User className={`h-8 w-8 mx-auto mb-2 ${
+                        selectedLoginType === 'user' ? 'text-primary' : 'text-muted-foreground'
+                      }`} />
                       <h3 className="font-semibold">User Login</h3>
                       <p className="text-xs text-muted-foreground">Standard access</p>
                     </CardContent>
                   </Card>
-                  <Card className="border-2 border-secondary/20 hover:border-secondary/40 transition-colors cursor-pointer">
+                  <Card 
+                    className={`border-2 transition-colors cursor-pointer ${
+                      selectedLoginType === 'admin' 
+                        ? 'border-secondary bg-secondary/5' 
+                        : 'border-secondary/20 hover:border-secondary/40'
+                    }`}
+                    onClick={() => handleLoginTypeSelect('admin')}
+                  >
                     <CardContent className="p-4 text-center">
-                      <Shield className="h-8 w-8 mx-auto mb-2 text-secondary" />
+                      <Shield className={`h-8 w-8 mx-auto mb-2 ${
+                        selectedLoginType === 'admin' ? 'text-secondary' : 'text-muted-foreground'
+                      }`} />
                       <h3 className="font-semibold">Admin Login</h3>
                       <p className="text-xs text-muted-foreground">Full access</p>
                     </CardContent>
@@ -171,7 +200,7 @@ const Auth = () => {
                 </div>
                 
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Signing in...' : 'Sign In'}
+                    {loading ? 'Signing in...' : `Sign In${selectedLoginType === 'admin' ? ' as Admin' : ''}`}
                   </Button>
                 </form>
               </div>
