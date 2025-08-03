@@ -120,7 +120,7 @@ export const SubscriptionCard = ({
             <DollarSign className="h-4 w-4 text-muted-foreground" />
             <div>
               <p className="font-semibold">
-                {subscription.currency} {subscription.cost.toFixed(2)}
+                ৳{subscription.cost.toFixed(2)}
               </p>
               <p className="text-xs text-muted-foreground">
                 {getBillingCycleText(subscription.billing_cycle)}

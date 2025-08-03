@@ -23,7 +23,7 @@ export const AddSubscriptionDialog = ({ editingSubscription, onEditComplete }: A
     name: editingSubscription?.name || '',
     description: editingSubscription?.description || '',
     cost: editingSubscription?.cost?.toString() || '',
-    currency: editingSubscription?.currency || 'USD',
+    currency: editingSubscription?.currency || 'BDT',
     billing_cycle: editingSubscription?.billing_cycle || 'monthly',
     category: editingSubscription?.category || 'other',
     provider: editingSubscription?.provider || '',
@@ -42,7 +42,7 @@ export const AddSubscriptionDialog = ({ editingSubscription, onEditComplete }: A
         name: '',
         description: '',
         cost: '',
-        currency: 'USD',
+        currency: 'BDT',
         billing_cycle: 'monthly',
         category: 'other',
         provider: '',
@@ -197,6 +197,7 @@ export const AddSubscriptionDialog = ({ editingSubscription, onEditComplete }: A
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="BDT">BDT (৳)</SelectItem>
                   <SelectItem value="USD">USD</SelectItem>
                   <SelectItem value="EUR">EUR</SelectItem>
                   <SelectItem value="GBP">GBP</SelectItem>

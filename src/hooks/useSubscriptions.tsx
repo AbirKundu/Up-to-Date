@@ -58,12 +58,13 @@ export const useSubscriptions = () => {
     if (!user) return null;
 
     try {
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .insert([{
-          ...subscriptionData,
-          user_id: user.id,
-        }])
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .insert([{
+        ...subscriptionData,
+        user_id: user.id,
+        currency: 'BDT', // Set default currency to BDT
+      }])
         .select()
         .single();
 

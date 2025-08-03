@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { useSubscriptions, Subscription } from '@/hooks/useSubscriptions';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { AddSubscriptionDialog } from '@/components/AddSubscriptionDialog';
+import { AdminSubscriptionManager } from '@/components/AdminSubscriptionManager';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   Search, 
   Filter, 
@@ -20,9 +22,11 @@ import {
 import { format } from 'date-fns';
 
 const Subscriptions = () => {
+  const { isAdmin } = useAuth();
   const { 
     subscriptions, 
     loading, 
+    addSubscription,
     updateSubscription, 
     deleteSubscription, 
     updateUsage,
@@ -93,8 +97,18 @@ const Subscriptions = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Admin View */}
+        {isAdmin ? (
+          <AdminSubscriptionManager
+            subscriptions={subscriptions}
+            onCreatePackage={addSubscription}
+            onUpdatePackage={updateSubscription}
+            onDeletePackage={deleteSubscription}
+          />
+        ) : (
+          <>
+            {/* User Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -113,7 +127,7 @@ const Subscriptions = () => {
                 <DollarSign className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-muted-foreground">Monthly Total</p>
-                  <p className="text-2xl font-bold">${monthlyTotal.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">৳{monthlyTotal.toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>
@@ -125,7 +139,7 @@ const Subscriptions = () => {
                 <TrendingUp className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-muted-foreground">Yearly Estimate</p>
-                  <p className="text-2xl font-bold">${(monthlyTotal * 12).toFixed(2)}</p>
+                  <p className="text-2xl font-bold">৳{(monthlyTotal * 12).toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>
@@ -168,7 +182,7 @@ const Subscriptions = () => {
                       <Badge variant="secondary">{sub.category}</Badge>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">{sub.currency} {sub.cost.toFixed(2)}</p>
+                      <p className="font-semibold">৳{sub.cost.toFixed(2)}</p>
                       <p className="text-xs text-muted-foreground">{sub.billing_cycle}</p>
                     </div>
                   </div>
@@ -254,12 +268,14 @@ const Subscriptions = () => {
           </div>
         )}
 
-        {/* Edit Dialog */}
-        {editingSubscription && (
-          <AddSubscriptionDialog
-            editingSubscription={editingSubscription}
-            onEditComplete={() => setEditingSubscription(null)}
-          />
+            {/* Edit Dialog */}
+            {editingSubscription && (
+              <AddSubscriptionDialog
+                editingSubscription={editingSubscription}
+                onEditComplete={() => setEditingSubscription(null)}
+              />
+            )}
+          </>
         )}
       </main>
     </div>
