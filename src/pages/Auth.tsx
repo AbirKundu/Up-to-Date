@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, User, Mail } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Shield } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -103,26 +103,44 @@ const Auth = () => {
           <Tabs value={isLogin ? 'login' : 'signup'} onValueChange={(value) => setIsLogin(value === 'login')}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signup">Register</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Card className="border-2 border-primary/20 hover:border-primary/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 text-center">
+                      <User className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <h3 className="font-semibold">User Login</h3>
+                      <p className="text-xs text-muted-foreground">Standard access</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-2 border-secondary/20 hover:border-secondary/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 text-center">
+                      <Shield className="h-8 w-8 mx-auto mb-2 text-secondary" />
+                      <h3 className="font-semibold">Admin Login</h3>
+                      <p className="text-xs text-muted-foreground">Full access</p>
+                    </CardContent>
+                  </Card>
                 </div>
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
@@ -152,10 +170,11 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Signing in...' : 'Sign In'}
-                </Button>
-              </form>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Signing in...' : 'Sign In'}
+                  </Button>
+                </form>
+              </div>
             </TabsContent>
             
             <TabsContent value="signup">

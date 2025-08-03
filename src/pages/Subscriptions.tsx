@@ -17,12 +17,16 @@ import {
   DollarSign,
   RefreshCw,
   BarChart3,
-  CreditCard
+  CreditCard,
+  Home,
+  LogOut
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 const Subscriptions = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user, signOut } = useAuth();
+  const navigate = useNavigate();
   const { 
     subscriptions, 
     loading, 
@@ -65,6 +69,10 @@ const Subscriptions = () => {
   const upcomingPayments = getUpcomingPayments();
   const activeCount = subscriptions.filter(sub => sub.is_active).length;
 
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -81,16 +89,27 @@ const Subscriptions = () => {
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">Subscription Manager</h1>
-              <p className="text-muted-foreground">Track and manage all your subscriptions</p>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+                <Home className="h-4 w-4 mr-2" />
+                Home
+              </Button>
+              <div>
+                <h1 className="text-3xl font-bold">Subscription Manager</h1>
+                <p className="text-muted-foreground">Track and manage all your subscriptions</p>
+              </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-muted-foreground">Welcome, {user?.email}</span>
               <Button variant="outline" onClick={refetch}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
               <AddSubscriptionDialog />
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
             </div>
           </div>
         </div>
