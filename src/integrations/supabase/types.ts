@@ -47,6 +47,83 @@ export type Database = {
         }
         Relationships: []
       }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          stripe_customer_id: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          stripe_customer_id?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      subscription_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          id: string
+          notes: string | null
+          payment_date: string
+          subscription_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          payment_date: string
+          subscription_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          payment_date?: string
+          subscription_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscription_preferences: {
         Row: {
           auto_renewal: boolean | null
@@ -80,6 +157,69 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          auto_renewal: boolean | null
+          billing_cycle: Database["public"]["Enums"]["billing_cycle"]
+          category: Database["public"]["Enums"]["subscription_category"] | null
+          cost: number
+          created_at: string
+          currency: string | null
+          current_usage: number | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          next_billing_date: string | null
+          notes: string | null
+          provider: string | null
+          updated_at: string
+          usage_limit: number | null
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          auto_renewal?: boolean | null
+          billing_cycle: Database["public"]["Enums"]["billing_cycle"]
+          category?: Database["public"]["Enums"]["subscription_category"] | null
+          cost: number
+          created_at?: string
+          currency?: string | null
+          current_usage?: number | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          next_billing_date?: string | null
+          notes?: string | null
+          provider?: string | null
+          updated_at?: string
+          usage_limit?: number | null
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          auto_renewal?: boolean | null
+          billing_cycle?: Database["public"]["Enums"]["billing_cycle"]
+          category?: Database["public"]["Enums"]["subscription_category"] | null
+          cost?: number
+          created_at?: string
+          currency?: string | null
+          current_usage?: number | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          next_billing_date?: string | null
+          notes?: string | null
+          provider?: string | null
+          updated_at?: string
+          usage_limit?: number | null
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -103,6 +243,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_next_billing_date: {
+        Args: {
+          last_date: string
+          cycle: Database["public"]["Enums"]["billing_cycle"]
+        }
+        Returns: string
+      }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["app_role"]
@@ -117,6 +264,15 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user" | "premium"
+      billing_cycle: "monthly" | "quarterly" | "yearly" | "weekly" | "daily"
+      subscription_category:
+        | "entertainment"
+        | "productivity"
+        | "business"
+        | "education"
+        | "health"
+        | "finance"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -245,6 +401,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "premium"],
+      billing_cycle: ["monthly", "quarterly", "yearly", "weekly", "daily"],
+      subscription_category: [
+        "entertainment",
+        "productivity",
+        "business",
+        "education",
+        "health",
+        "finance",
+        "other",
+      ],
     },
   },
 } as const
