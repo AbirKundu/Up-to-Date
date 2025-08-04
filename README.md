@@ -1,73 +1,60 @@
-# Welcome to your Lovable project
+Hellow, I am Abir 👋
+Welcome to Subscription Plan project 🚀
 
-## Project info
+🌐 Project Info
+URL: https://subs-plan-abir.vercel.app
 
-**URL**: https://lovable.dev/projects/b4f62566-8e5b-48f6-9868-0ef2a4174d0a
+🧠 Supervision
+This project is proudly developed under the supervision of Raihanul Islam, Software Engineer at OrangeToolz.
+Working with him has been an amazing experience — his mentorship, guidance, and positive approach made the journey not only smooth but also incredibly insightful. I'm truly grateful for his support and the opportunity to learn under such a talented engineer. 🙌
 
-## How can I edit this code?
+🛠 How can I edit this code?
+There are several ways to edit your application:
 
-There are several ways of editing your application.
+💻 Use your preferred IDE
+If you want to work locally using your own IDE, clone the repo and push your changes. Updates will also reflect in Lovable.
+Make sure you have Node.js & npm installed – Install with nvm
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/b4f62566-8e5b-48f6-9868-0ef2a4174d0a) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+bash
+Copy
+Edit
+# Step 1: Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Step 2: Go to the project folder
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
+# Step 3: Install dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Run the development server
 npm run dev
-```
+📝 Edit directly in GitHub
+Open the desired file(s)
 
-**Edit a file directly in GitHub**
+Click the ✏️ "Edit" icon on top-right
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Commit your changes
 
-**Use GitHub Codespaces**
+💡 Use GitHub Codespaces
+Open your repo main page
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Click Code > Codespaces tab
 
-## What technologies are used for this project?
+Hit New codespace to start coding in-browser
 
-This project is built with:
+Edit, commit, push – all from one place
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+🧩 Technologies Used
+⚡ Vite
 
-## How can I deploy this project?
+🔠 TypeScript
 
-Simply open [Lovable](https://lovable.dev/projects/b4f62566-8e5b-48f6-9868-0ef2a4174d0a) and click on Share -> Publish.
+⚛️ React
 
-## Can I connect a custom domain to my Lovable project?
+🎨 shadcn-ui
 
-Yes, you can!
+💨 Tailwind CSS
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+🚀 Deployment
+The project is deployed via Vercel – fast, simple, and perfect for React apps.
