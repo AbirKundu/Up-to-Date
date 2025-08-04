@@ -237,35 +237,53 @@ const AdminPackageManager = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {packages.map((pkg) => (
-            <Card key={pkg.id} className="h-full flex flex-col">
-              <CardHeader>
+            <Card key={pkg.id} className={`h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+              pkg.is_active 
+                ? 'border-admin/20 hover:border-admin/40 hover:shadow-admin/10' 
+                : 'border-muted opacity-75'
+            }`}>
+              <CardHeader className="pb-4">
                 <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <CardTitle className="flex items-center gap-2 text-lg">
                       {pkg.name}
-                      {!pkg.is_active && <Badge variant="secondary">Inactive</Badge>}
+                      <div className="flex gap-1">
+                        {pkg.is_active ? (
+                          <Badge className="bg-admin text-admin-foreground">Active</Badge>
+                        ) : (
+                          <Badge variant="secondary">Inactive</Badge>
+                        )}
+                      </div>
                     </CardTitle>
-                    <CardDescription>{pkg.description}</CardDescription>
+                    <CardDescription className="mt-1">{pkg.description}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="flex-1">
-                <div className="space-y-3">
-                  <div className="text-2xl font-bold text-primary">
-                    ৳{pkg.price}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      /{pkg.billing_cycle}
-                    </span>
+                <div className="space-y-4">
+                  <div className="text-center p-4 bg-gradient-to-br from-admin/5 to-admin/10 rounded-lg border border-admin/20">
+                    <div className="text-3xl font-bold text-admin">
+                      ৳{pkg.price}
+                    </div>
+                    <div className="text-sm text-muted-foreground capitalize">
+                      per {pkg.billing_cycle}
+                    </div>
                   </div>
-                  <Badge variant="outline">{pkg.billing_cycle}</Badge>
+                  
                   {pkg.features && (
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Features:</p>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-foreground">Features included:</p>
+                      <ul className="text-sm space-y-1">
                         {Array.isArray(pkg.features) ? pkg.features.map((feature: string, index: number) => (
-                          <li key={index}>• {feature}</li>
+                          <li key={index} className="flex items-center gap-2 text-muted-foreground">
+                            <div className="w-1.5 h-1.5 bg-admin rounded-full"></div>
+                            {feature}
+                          </li>
                         )) : (
-                          <li>• {pkg.features}</li>
+                          <li className="flex items-center gap-2 text-muted-foreground">
+                            <div className="w-1.5 h-1.5 bg-admin rounded-full"></div>
+                            {pkg.features}
+                          </li>
                         )}
                       </ul>
                     </div>
@@ -273,11 +291,23 @@ const AdminPackageManager = () => {
                 </div>
               </CardContent>
               <div className="p-6 pt-0 flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => handleEditPackage(pkg)}>
-                  <Edit className="h-4 w-4" />
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleEditPackage(pkg)}
+                  className="flex-1 hover:bg-admin/10 hover:border-admin/30"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleDeletePackage(pkg.id)}>
-                  <Trash2 className="h-4 w-4" />
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleDeletePackage(pkg.id)}
+                  className="flex-1 hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
                 </Button>
               </div>
             </Card>

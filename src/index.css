@@ -23,6 +23,14 @@ All colors MUST be HSL.
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
+    --admin: 262 83% 58%;
+    --admin-foreground: 210 40% 98%;
+    --admin-glow: 262 83% 58%;
+
+    --user: 142 71% 45%;
+    --user-foreground: 210 40% 98%;
+    --user-glow: 142 71% 45%;
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
@@ -70,6 +78,14 @@ All colors MUST be HSL.
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+
+    --admin: 262 83% 58%;
+    --admin-foreground: 210 40% 98%;
+    --admin-glow: 262 83% 58%;
+
+    --user: 142 71% 45%;
+    --user-foreground: 210 40% 98%;
+    --user-glow: 142 71% 45%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;

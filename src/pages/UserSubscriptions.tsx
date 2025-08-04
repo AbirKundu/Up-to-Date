@@ -172,49 +172,79 @@ const UserSubscriptions = () => {
             </Alert>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {packages.map((pkg) => (
-                <Card key={pkg.id} className="h-full flex flex-col">
-                  <CardHeader>
-                    <CardTitle>{pkg.name}</CardTitle>
-                    <CardDescription>{pkg.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <div className="space-y-2">
-                      <div className="text-2xl font-bold text-primary">
-                        ৳{pkg.price}
-                        <span className="text-sm font-normal text-muted-foreground">
-                          /{pkg.billing_cycle}
-                        </span>
-                      </div>
-                      <Badge variant="secondary">{pkg.billing_cycle}</Badge>
-                      {pkg.features && (
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium">Features:</p>
-                          <ul className="text-sm text-muted-foreground space-y-1">
-                            {Array.isArray(pkg.features) ? pkg.features.map((feature: string, index: number) => (
-                              <li key={index}>• {feature}</li>
-                            )) : (
-                              <li>• {pkg.features}</li>
+              {packages.map((pkg) => {
+                const isInCart = cartItems.some(item => item.package_id === pkg.id);
+                const isCurrentPlan = activeSubscription?.package_id === pkg.id && activeSubscription.status === 'active';
+                const isDisabled = isInCart || isCurrentPlan;
+                
+                return (
+                  <Card key={pkg.id} className={`h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+                    isCurrentPlan 
+                      ? 'border-user ring-2 ring-user/20 bg-user/5' 
+                      : 'border-border hover:border-user/40 hover:shadow-user/10'
+                  }`}>
+                    <CardHeader className="pb-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="flex items-center gap-2 text-lg">
+                            {pkg.name}
+                            {isCurrentPlan && (
+                              <Badge className="bg-user text-user-foreground">Current Plan</Badge>
                             )}
-                          </ul>
+                          </CardTitle>
+                          <CardDescription className="mt-1">{pkg.description}</CardDescription>
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      className="w-full" 
-                      onClick={() => addToCart(pkg.id)}
-                      disabled={cartItems.some(item => item.package_id === pkg.id) || 
-                               (activeSubscription?.package_id === pkg.id && activeSubscription.status === 'active')}
-                    >
-                      {cartItems.some(item => item.package_id === pkg.id) ? 'In Cart' :
-                       (activeSubscription?.package_id === pkg.id && activeSubscription.status === 'active') ? 'Current Plan' :
-                       'Add to Cart'}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                      <div className="space-y-4">
+                        <div className="text-center p-4 bg-gradient-to-br from-user/5 to-user/10 rounded-lg border border-user/20">
+                          <div className="text-3xl font-bold text-user">
+                            ৳{pkg.price}
+                          </div>
+                          <div className="text-sm text-muted-foreground capitalize">
+                            per {pkg.billing_cycle}
+                          </div>
+                        </div>
+                        
+                        {pkg.features && (
+                          <div className="space-y-2">
+                            <p className="text-sm font-semibold text-foreground">Features included:</p>
+                            <ul className="text-sm space-y-1">
+                              {Array.isArray(pkg.features) ? pkg.features.map((feature: string, index: number) => (
+                                <li key={index} className="flex items-center gap-2 text-muted-foreground">
+                                  <div className="w-1.5 h-1.5 bg-user rounded-full"></div>
+                                  {feature}
+                                </li>
+                              )) : (
+                                <li className="flex items-center gap-2 text-muted-foreground">
+                                  <div className="w-1.5 h-1.5 bg-user rounded-full"></div>
+                                  {pkg.features}
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button 
+                        className={`w-full transition-all duration-300 ${
+                          isCurrentPlan 
+                            ? 'bg-user/50 text-user-foreground cursor-not-allowed' 
+                            : isInCart 
+                              ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                              : 'bg-user hover:bg-user/90 text-user-foreground hover:shadow-lg hover:shadow-user/30 active:scale-95'
+                        }`}
+                        onClick={() => addToCart(pkg.id)}
+                        disabled={isDisabled}
+                      >
+                        {isInCart ? 'In Cart' : isCurrentPlan ? 'Current Plan' : 'Add to Cart'}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>

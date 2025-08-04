@@ -52,6 +52,16 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				admin: {
+					DEFAULT: 'hsl(var(--admin))',
+					foreground: 'hsl(var(--admin-foreground))',
+					glow: 'hsl(var(--admin-glow))'
+				},
+				user: {
+					DEFAULT: 'hsl(var(--user))',
+					foreground: 'hsl(var(--user-foreground))',
+					glow: 'hsl(var(--user-glow))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +94,29 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'glow-pulse': {
+					'0%, 100%': {
+						boxShadow: '0 0 20px rgba(var(--admin-glow), 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 30px rgba(var(--admin-glow), 0.8), 0 0 40px rgba(var(--admin-glow), 0.3)'
+					}
+				},
+				'user-glow-pulse': {
+					'0%, 100%': {
+						boxShadow: '0 0 20px rgba(var(--user-glow), 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 30px rgba(var(--user-glow), 0.8), 0 0 40px rgba(var(--user-glow), 0.3)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+				'user-glow-pulse': 'user-glow-pulse 2s ease-in-out infinite'
 			}
 		}
 	},

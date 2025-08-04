@@ -18,6 +18,7 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedLoginType, setSelectedLoginType] = useState<'user' | 'admin'>('user');
+  const [buttonPressed, setButtonPressed] = useState<'user' | 'admin' | null>(null);
   
   const { signIn, signUp, user, isAdmin, userRole } = useAuth();
   const { toast } = useToast();
@@ -32,6 +33,11 @@ const Auth = () => {
 
   const handleLoginTypeSelect = (type: 'user' | 'admin') => {
     setSelectedLoginType(type);
+    setButtonPressed(type);
+    
+    // Brief glow effect
+    setTimeout(() => setButtonPressed(null), 150);
+    
     // Pre-fill admin email if admin login is selected
     if (type === 'admin') {
       setEmail('abircse22@gmail.com');
@@ -121,34 +127,46 @@ const Auth = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <Card 
-                    className={`border-2 transition-colors cursor-pointer ${
+                    className={`border-2 transition-all duration-300 cursor-pointer transform ${
                       selectedLoginType === 'user' 
-                        ? 'border-primary bg-primary/5' 
-                        : 'border-primary/20 hover:border-primary/40'
+                        ? 'border-user bg-user/10 shadow-lg shadow-user/20' 
+                        : 'border-user/30 hover:border-user/60 hover:shadow-md hover:shadow-user/10'
+                    } ${
+                      buttonPressed === 'user' 
+                        ? 'animate-user-glow-pulse scale-105' 
+                        : 'hover:scale-105'
                     }`}
                     onClick={() => handleLoginTypeSelect('user')}
                   >
                     <CardContent className="p-4 text-center">
-                      <User className={`h-8 w-8 mx-auto mb-2 ${
-                        selectedLoginType === 'user' ? 'text-primary' : 'text-muted-foreground'
+                      <User className={`h-8 w-8 mx-auto mb-2 transition-colors ${
+                        selectedLoginType === 'user' ? 'text-user' : 'text-muted-foreground'
                       }`} />
-                      <h3 className="font-semibold">User Login</h3>
+                      <h3 className={`font-semibold transition-colors ${
+                        selectedLoginType === 'user' ? 'text-user' : 'text-foreground'
+                      }`}>User Login</h3>
                       <p className="text-xs text-muted-foreground">Standard access</p>
                     </CardContent>
                   </Card>
                   <Card 
-                    className={`border-2 transition-colors cursor-pointer ${
+                    className={`border-2 transition-all duration-300 cursor-pointer transform ${
                       selectedLoginType === 'admin' 
-                        ? 'border-secondary bg-secondary/5' 
-                        : 'border-secondary/20 hover:border-secondary/40'
+                        ? 'border-admin bg-admin/10 shadow-lg shadow-admin/20' 
+                        : 'border-admin/30 hover:border-admin/60 hover:shadow-md hover:shadow-admin/10'
+                    } ${
+                      buttonPressed === 'admin' 
+                        ? 'animate-glow-pulse scale-105' 
+                        : 'hover:scale-105'
                     }`}
                     onClick={() => handleLoginTypeSelect('admin')}
                   >
                     <CardContent className="p-4 text-center">
-                      <Shield className={`h-8 w-8 mx-auto mb-2 ${
-                        selectedLoginType === 'admin' ? 'text-secondary' : 'text-muted-foreground'
+                      <Shield className={`h-8 w-8 mx-auto mb-2 transition-colors ${
+                        selectedLoginType === 'admin' ? 'text-admin' : 'text-muted-foreground'
                       }`} />
-                      <h3 className="font-semibold">Admin Login</h3>
+                      <h3 className={`font-semibold transition-colors ${
+                        selectedLoginType === 'admin' ? 'text-admin' : 'text-foreground'
+                      }`}>Admin Login</h3>
                       <p className="text-xs text-muted-foreground">Full access</p>
                     </CardContent>
                   </Card>
@@ -199,7 +217,15 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button 
+                    type="submit" 
+                    className={`w-full transition-all duration-300 ${
+                      selectedLoginType === 'admin' 
+                        ? 'bg-admin hover:bg-admin/90 text-admin-foreground hover:shadow-lg hover:shadow-admin/30 active:scale-95' 
+                        : 'bg-user hover:bg-user/90 text-user-foreground hover:shadow-lg hover:shadow-user/30 active:scale-95'
+                    }`}
+                    disabled={loading}
+                  >
                     {loading ? 'Signing in...' : `Sign In${selectedLoginType === 'admin' ? ' as Admin' : ''}`}
                   </Button>
                 </form>
@@ -285,7 +311,11 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-user hover:bg-user/90 text-user-foreground hover:shadow-lg hover:shadow-user/30 active:scale-95 transition-all duration-300" 
+                  disabled={loading}
+                >
                   {loading ? 'Creating account...' : 'Create Account'}
                 </Button>
               </form>
