@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/hooks/useAuth';
 import { CreditCard, Settings, TrendingUp } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
+import { SubscriptionQuickStats } from '@/components/SubscriptionQuickStats';
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -45,7 +46,12 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{/* ... keep existing code (card components) */}
+        {/* Subscription Quick Stats */}
+        <div className="mb-8">
+          <SubscriptionQuickStats />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -81,34 +87,6 @@ const Index = () => {
                 Manage your account settings and notification preferences.
               </p>
               <Button variant="outline" className="w-full" onClick={() => navigate('/profile')}>Edit Profile</Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <TrendingUp className="h-5 w-5 mr-2" />
-                Quick Stats
-              </CardTitle>
-              <CardDescription>
-                Your subscription overview
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm">Active Subscriptions:</span>
-                  <span className="font-semibold">0</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm">Monthly Total:</span>
-                  <span className="font-semibold">$0.00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm">Next Payment:</span>
-                  <span className="font-semibold text-muted-foreground">None</span>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>

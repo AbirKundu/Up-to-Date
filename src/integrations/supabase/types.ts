@@ -318,6 +318,60 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscription_history: {
+        Row: {
+          created_at: string
+          credits_purchased: number | null
+          credits_remaining: number | null
+          currency: string
+          expiry_date: string
+          id: string
+          is_active: boolean
+          package_id: string
+          package_name: string
+          plan_duration: string
+          price: number
+          start_date: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_purchased?: number | null
+          credits_remaining?: number | null
+          currency?: string
+          expiry_date: string
+          id?: string
+          is_active?: boolean
+          package_id: string
+          package_name: string
+          plan_duration: string
+          price: number
+          start_date?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_purchased?: number | null
+          credits_remaining?: number | null
+          currency?: string
+          expiry_date?: string
+          id?: string
+          is_active?: boolean
+          package_id?: string
+          package_name?: string
+          plan_duration?: string
+          price?: number
+          start_date?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_subscriptions: {
         Row: {
           created_at: string
@@ -375,6 +429,10 @@ export type Database = {
           last_date: string
           cycle: Database["public"]["Enums"]["billing_cycle"]
         }
+        Returns: string
+      }
+      calculate_plan_expiry: {
+        Args: { start_date: string; plan_duration: string }
         Returns: string
       }
       get_current_user_role: {

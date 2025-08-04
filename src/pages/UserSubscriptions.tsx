@@ -1,39 +1,39 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscriptionPackages } from '@/hooks/useSubscriptionPackages';
+import { useSubscriptionHistory } from '@/hooks/useSubscriptionHistory';
 import { Navbar } from '@/components/Navbar';
+import { SubscriptionQuickStats } from '@/components/SubscriptionQuickStats';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, CreditCard, Package, Calendar, Trash2, CheckCircle } from 'lucide-react';
+import { ShoppingCart, CreditCard, Package, Calendar, Trash2, CheckCircle, Clock } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const UserSubscriptions = () => {
   const { user } = useAuth();
-  const {
-    packages,
-    userSubscriptions,
-    cartItems,
-    loading,
-    addToCart,
-    removeFromCart,
-    purchaseFromCart,
-    cancelSubscription
-  } = useSubscriptionPackages();
-
+  const { packages, loading: packagesLoading } = useSubscriptionPackages();
+  const { 
+    activeSubscriptions, 
+    subscriptions, 
+    planDurations, 
+    calculateProratedPrice, 
+    purchaseSubscription, 
+    cancelSubscription,
+    loading: historyLoading 
+  } = useSubscriptionHistory();
+  
   const [purchasing, setPurchasing] = useState(false);
+  const [selectedDuration, setSelectedDuration] = useState<{[key: string]: string}>({});
 
-  const handlePurchase = async () => {
+  const loading = packagesLoading || historyLoading;
+
+  const handlePurchase = async (packageId: string, packageName: string, basePrice: number, duration: string) => {
     setPurchasing(true);
-    await purchaseFromCart();
+    await purchaseSubscription(packageId, packageName, basePrice, duration);
     setPurchasing(false);
   };
-
-  const activeSubscription = userSubscriptions.find(sub => sub.status === 'active');
-  const cartTotal = cartItems.reduce((sum, item) => sum + (item.subscription_packages?.price || 0), 0);
-  const creditsAvailable = activeSubscription?.credits_remaining || 0;
-  const finalPrice = Math.max(0, cartTotal - creditsAvailable);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('bn-BD');
@@ -64,98 +64,10 @@ const UserSubscriptions = () => {
           <p className="text-muted-foreground">Browse and purchase subscription packages</p>
         </div>
 
-        {/* Current Subscription Status */}
-        {activeSubscription && (
-          <Card className="mb-8 border-green-200 bg-green-50 dark:bg-green-950/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
-                <CheckCircle className="h-5 w-5" />
-                Active Subscription
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Package</p>
-                  <p className="font-semibold">{activeSubscription.subscription_packages?.name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Expires</p>
-                  <p className="font-semibold">{activeSubscription.expires_at ? formatDate(activeSubscription.expires_at) : 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Credits Available</p>
-                  <p className="font-semibold text-green-600">৳{creditsAvailable.toFixed(2)}</p>
-                </div>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="mt-4"
-                onClick={() => cancelSubscription(activeSubscription.id)}
-              >
-                Cancel Subscription
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Shopping Cart */}
-        {cartItems.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5" />
-                Shopping Cart ({cartItems.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <h4 className="font-semibold">{item.subscription_packages?.name}</h4>
-                      <p className="text-sm text-muted-foreground">{item.subscription_packages?.description}</p>
-                      <p className="font-semibold text-primary">৳{item.subscription_packages?.price}</p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeFromCart(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                <Separator />
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal:</span>
-                    <span>৳{cartTotal.toFixed(2)}</span>
-                  </div>
-                  {creditsAvailable > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Credits Applied:</span>
-                      <span>-৳{Math.min(creditsAvailable, cartTotal).toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total:</span>
-                    <span>৳{finalPrice.toFixed(2)}</span>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full" 
-                  onClick={handlePurchase}
-                  disabled={purchasing}
-                >
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  {purchasing ? 'Processing...' : 'Complete Purchase'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Quick Stats */}
+        <div className="mb-8">
+          <SubscriptionQuickStats />
+        </div>
 
         {/* Available Packages */}
         <div className="mb-8">
@@ -173,23 +85,23 @@ const UserSubscriptions = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {packages.map((pkg) => {
-                const isInCart = cartItems.some(item => item.package_id === pkg.id);
-                const isCurrentPlan = activeSubscription?.package_id === pkg.id && activeSubscription.status === 'active';
-                const isDisabled = isInCart || isCurrentPlan;
+                const hasActiveSubscription = activeSubscriptions.some(sub => sub.package_id === pkg.id);
+                const currentDuration = selectedDuration[pkg.id] || 'monthly';
+                const proratedPrice = calculateProratedPrice(Number(pkg.price), currentDuration);
                 
                 return (
                   <Card key={pkg.id} className={`h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
-                    isCurrentPlan 
-                      ? 'border-user ring-2 ring-user/20 bg-user/5' 
-                      : 'border-border hover:border-user/40 hover:shadow-user/10'
+                    hasActiveSubscription 
+                      ? 'border-primary ring-2 ring-primary/20 bg-primary/5' 
+                      : 'border-border hover:border-primary/40 hover:shadow-primary/10'
                   }`}>
                     <CardHeader className="pb-4">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <CardTitle className="flex items-center gap-2 text-lg">
                             {pkg.name}
-                            {isCurrentPlan && (
-                              <Badge className="bg-user text-user-foreground">Current Plan</Badge>
+                            {hasActiveSubscription && (
+                              <Badge className="bg-primary text-primary-foreground">Active</Badge>
                             )}
                           </CardTitle>
                           <CardDescription className="mt-1">{pkg.description}</CardDescription>
@@ -198,13 +110,42 @@ const UserSubscriptions = () => {
                     </CardHeader>
                     <CardContent className="flex-1">
                       <div className="space-y-4">
-                        <div className="text-center p-4 bg-gradient-to-br from-user/5 to-user/10 rounded-lg border border-user/20">
-                          <div className="text-3xl font-bold text-user">
-                            ৳{pkg.price}
+                        {/* Plan Duration Selection */}
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold">Select Duration:</p>
+                          <div className="grid grid-cols-3 gap-2">
+                            {planDurations.map((duration) => (
+                              <Button
+                                key={duration.key}
+                                variant={selectedDuration[pkg.id] === duration.key ? "default" : "outline"}
+                                size="sm"
+                                className="text-xs"
+                                onClick={() => setSelectedDuration(prev => ({
+                                  ...prev,
+                                  [pkg.id]: duration.key
+                                }))}
+                              >
+                                {duration.label}
+                              </Button>
+                            ))}
                           </div>
-                          <div className="text-sm text-muted-foreground capitalize">
-                            per {pkg.billing_cycle}
+                        </div>
+
+                        {/* Price Display */}
+                        <div className="text-center p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
+                          <div className="text-3xl font-bold text-primary">
+                            ৳{proratedPrice.toFixed(2)}
                           </div>
+                          <div className="text-sm text-muted-foreground">
+                            {currentDuration === 'weekly' ? 'for 7 days' : 
+                             currentDuration === '15-day' ? 'for 15 days' : 
+                             'per month'}
+                          </div>
+                          {currentDuration !== 'monthly' && (
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Base price: ৳{pkg.price}/month
+                            </div>
+                          )}
                         </div>
                         
                         {pkg.features && (
@@ -213,12 +154,12 @@ const UserSubscriptions = () => {
                             <ul className="text-sm space-y-1">
                               {Array.isArray(pkg.features) ? pkg.features.map((feature: string, index: number) => (
                                 <li key={index} className="flex items-center gap-2 text-muted-foreground">
-                                  <div className="w-1.5 h-1.5 bg-user rounded-full"></div>
+                                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
                                   {feature}
                                 </li>
                               )) : (
                                 <li className="flex items-center gap-2 text-muted-foreground">
-                                  <div className="w-1.5 h-1.5 bg-user rounded-full"></div>
+                                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
                                   {pkg.features}
                                 </li>
                               )}
@@ -229,17 +170,12 @@ const UserSubscriptions = () => {
                     </CardContent>
                     <CardFooter>
                       <Button 
-                        className={`w-full transition-all duration-300 ${
-                          isCurrentPlan 
-                            ? 'bg-user/50 text-user-foreground cursor-not-allowed' 
-                            : isInCart 
-                              ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                              : 'bg-user hover:bg-user/90 text-user-foreground hover:shadow-lg hover:shadow-user/30 active:scale-95'
-                        }`}
-                        onClick={() => addToCart(pkg.id)}
-                        disabled={isDisabled}
+                        className="w-full"
+                        onClick={() => handlePurchase(pkg.id, pkg.name, Number(pkg.price), currentDuration)}
+                        disabled={purchasing}
                       >
-                        {isInCart ? 'In Cart' : isCurrentPlan ? 'Current Plan' : 'Add to Cart'}
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        {purchasing ? 'Processing...' : `Purchase ${currentDuration === 'weekly' ? '7-Day' : currentDuration === '15-day' ? '15-Day' : 'Monthly'} Plan`}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -249,21 +185,73 @@ const UserSubscriptions = () => {
           )}
         </div>
 
+        {/* Active Subscriptions */}
+        {activeSubscriptions.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+              <CheckCircle className="h-6 w-6" />
+              Active Subscriptions
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeSubscriptions.map((subscription) => (
+                <Card key={subscription.id} className="border-green-200 bg-green-50 dark:bg-green-950/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between text-green-700 dark:text-green-400">
+                      <span>{subscription.package_name}</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        {subscription.plan_duration}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Credits Remaining:</span>
+                        <span className="font-semibold">৳{subscription.credits_remaining.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Expires:</span>
+                        <span className="font-semibold">{formatDate(subscription.expiry_date)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Price Paid:</span>
+                        <span className="font-semibold">৳{subscription.price}</span>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full mt-4"
+                      onClick={() => cancelSubscription(subscription.id)}
+                    >
+                      Cancel Subscription
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Subscription History */}
-        {userSubscriptions.length > 0 && (
+        {subscriptions.length > 0 && (
           <div>
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
               <Calendar className="h-6 w-6" />
               Subscription History
             </h2>
             <div className="space-y-4">
-              {userSubscriptions.map((subscription) => (
+              {subscriptions.map((subscription) => (
                 <Card key={subscription.id}>
                   <CardContent className="pt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                       <div>
                         <p className="text-sm text-muted-foreground">Package</p>
-                        <p className="font-semibold">{subscription.subscription_packages?.name}</p>
+                        <p className="font-semibold">{subscription.package_name}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Duration</p>
+                        <Badge variant="outline">{subscription.plan_duration}</Badge>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Status</p>
@@ -273,11 +261,11 @@ const UserSubscriptions = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Started</p>
-                        <p className="font-semibold">{formatDate(subscription.started_at)}</p>
+                        <p className="font-semibold">{formatDate(subscription.start_date)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Total Paid</p>
-                        <p className="font-semibold">৳{subscription.total_paid}</p>
+                        <p className="text-sm text-muted-foreground">Price Paid</p>
+                        <p className="font-semibold">৳{subscription.price}</p>
                       </div>
                     </div>
                   </CardContent>
