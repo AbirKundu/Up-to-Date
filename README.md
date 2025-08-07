@@ -1,17 +1,17 @@
-Hellow, I am Abir 👋
+## Hellow, I am Abir 👋
 Welcome to Subscription Plan project 🚀
 
-🌐 Project Info
+## 🌐 Project Info
 URL: https://subs-plan-abir.vercel.app
 
-🧠 Supervision
+## 🧠 Supervision
 This project is proudly developed under the supervision of Raihanul Islam, Software Engineer at OrangeToolz.
 Working with him has been an amazing experience — his mentorship, guidance, and positive approach made the journey not only smooth but also incredibly insightful. I'm truly grateful for his support and the opportunity to learn under such a talented engineer. 🙌
 
-🛠 How can I edit this code?
+## 🛠 How can I edit this code?
 There are several ways to edit your application:
 
-💻 Use your preferred IDE
+## 💻 Use your preferred IDE
 If you want to work locally using your own IDE, clone the repo and push your changes. Updates will also reflect in Lovable.
 Make sure you have Node.js & npm installed – Install with nvm
 
