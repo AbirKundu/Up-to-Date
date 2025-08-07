@@ -5,7 +5,7 @@ Welcome to Subscription Plan project 🚀
 URL: https://subs-plan-abir.vercel.app
 
 ## 🧠 Supervision
-This project is proudly developed under the supervision of Raihanul Islam, Software Engineer at OrangeToolz.
+This project is proudly developed under the supervision of _**Raihanul Islam, Software Engineer at OrangeToolz.**_
 Working with him has been an amazing experience — his mentorship, guidance, and positive approach made the journey not only smooth but also incredibly insightful. I'm truly grateful for his support and the opportunity to learn under such a talented engineer. 🙌
 
 ## 🛠 How can I edit this code?
